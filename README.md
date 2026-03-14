@@ -12,6 +12,20 @@ Convert your Excel files into beautiful, interactive, and premium HTML reports w
 - 📱 **Responsive**: Built to look great on desktops, tablets, and phones.
 - 🛠️ **Simple CLI**: Easy to use for engineers and data analysts.
 
+## Project Structure
+
+```text
+excel-to-html-report/
+├── src/
+│   ├── index.js        # CLI entry point
+│   ├── parser.js       # Excel parsing logic
+│   ├── renderer.js     # HTML generation logic
+│   └── templates/      # EJS templates
+├── create_sample.js    # Utility to generate test Excel data
+├── package.json        # Project metadata and dependencies
+└── README.md           # Project documentation
+```
+
 ## Installation
 
 ```bash
