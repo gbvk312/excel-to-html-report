@@ -18,7 +18,7 @@ program
       
       console.log(`\x1b[36m%s\x1b[0m`, `🚀 Starting conversion: ${input}`);
       
-      const excelData = parseExcel(inputPath);
+      const excelData = await parseExcel(inputPath);
       console.log(`\x1b[32m%s\x1b[0m`, `✅ Parsed ${excelData.sheetNames.length} sheet(s)`);
 
       await renderReport(excelData, options.title, outputPath);
