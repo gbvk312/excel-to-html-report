@@ -1,19 +1,43 @@
-const XLSX = require('xlsx');
+const ExcelJS = require('exceljs');
 
 /**
  * Parses an Excel file and returns an object containing sheet names and their data.
  * @param {string} filePath - Path to the Excel file.
- * @returns {Object} { sheetNames: string[], data: Object }
+ * @returns {Promise<Object>} { sheetNames: string[], data: Object }
  */
-function parseExcel(filePath) {
+async function parseExcel(filePath) {
   try {
-    const workbook = XLSX.readFile(filePath);
-    const sheetNames = workbook.SheetNames;
+    const workbook = new ExcelJS.Workbook();
+    await workbook.xlsx.readFile(filePath);
+    
+    const sheetNames = [];
     const data = {};
 
-    sheetNames.forEach(sheetName => {
-      const worksheet = workbook.Sheets[sheetName];
-      data[sheetName] = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
+    workbook.eachSheet((worksheet, sheetId) => {
+      sheetNames.push(worksheet.name);
+      const headers = [];
+      const sheetData = [];
+
+      worksheet.eachRow((row, rowNumber) => {
+        if (rowNumber === 1) {
+          row.eachCell((cell, colNumber) => {
+            headers[colNumber] = cell.value?.toString() || `__EMPTY_${colNumber}`;
+          });
+        } else {
+          const rowData = {};
+          for (let i = 1; i < headers.length; i++) {
+            if (headers[i]) rowData[headers[i]] = "";
+          }
+          row.eachCell((cell, colNumber) => {
+            if (headers[colNumber]) {
+              rowData[headers[colNumber]] = cell.value;
+            }
+          });
+          sheetData.push(rowData);
+        }
+      });
+      
+      data[worksheet.name] = sheetData;
     });
 
     return { sheetNames, data };
